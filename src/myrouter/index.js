@@ -8,6 +8,7 @@ class vueRouter {
   constructor(options) {
     this.mode = options.mode || 'hash'
     this.history = new HistoryRoute
+    this.routesMap = this.createMap(options.routes)
     this.init()
   }
   init() {
@@ -24,15 +25,16 @@ class vueRouter {
       window.addEventListener('load', () => {
         this.history.current = location.pathname
       })
-      window.addEventListener('hashchange', () => {
+      window.addEventListener('onpopstate', () => {
         this.history.current = location.pathname
       })
     }
   }
   createMap(router) {
-    return router.reduce(() => {
-
-    })
+    return router.reduce((memo, current) => {
+      memo[current.path] = current.component
+      return memo
+    }, {})
   }
 }
 vueRouter.install = function(Vue) {
@@ -45,12 +47,19 @@ vueRouter.install = function(Vue) {
       } else {
         this._root = this.$parent._root
       }
+      Object.defineProperty(this, '$router', {
+        get() {
+          return this._root._router
+        }
+      })
     }
   })
   Vue.component('router-view', {
+    // h 方法是可以渲染的方法
     render(h) {
       let current = this._self._root._router.history.current
-
+      let routesMap = this._self._root._router.routesMap
+      return h(routesMap[current])
     }
     // 如何根据当前的current，获取到对应的组件
 

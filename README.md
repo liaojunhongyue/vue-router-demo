@@ -1,6 +1,12 @@
 # vue-router-demo
 
-> A Vue.js project
+> 一个自己实现的vue-router的小demo。
+
+## 包含内容
+
+- Vue插件注册。
+- Vue-router的路由模式。
+- `router-view`的render，根据当前路由渲染出对应的组件。
 
 ## Build Setup
 
